@@ -8,12 +8,14 @@ import {monacoConfig} from './config/monaco-config';
 import {FormsModule} from '@angular/forms';
 import { EditorComponent } from './editor/editor.component';
 import { TreeComponent } from './tree/tree.component';
+import { DynamicComponent } from './dynamic/dynamic.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     EditorComponent,
-    TreeComponent
+    TreeComponent,
+    DynamicComponent
   ],
   imports: [
     BrowserModule,
