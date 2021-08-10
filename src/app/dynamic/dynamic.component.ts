@@ -9,6 +9,6 @@ export class DynamicComponent {
   @Input() data: any
 
   handle() {
-    console.log('handle')
+    alert(1)
   }
 }
