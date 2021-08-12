@@ -2,176 +2,7 @@
 
 import G6 from '@antv/g6';
 import { Component, OnInit, NgZone } from '@angular/core';
-
-const data = {
-  nodes: [
-    {
-      id: '2',
-      dataType: 'alps',
-      name: 'cf-api-eventsource',
-      subtitle: 'alps_file2',
-      status: true,
-      conf: [
-        {
-          label: 'conf',
-          value: 'pai_graph.conf',
-        },
-        {
-          label: 'dot',
-          value: 'pai_graph.dot',
-        },
-        {
-          label: 'init',
-          value: 'init.rc',
-        },
-      ],
-    },
-    {
-      id: '3',
-      dataType: 'alps',
-      name: 'alps_file3',
-      conf: [
-        {
-          label: 'conf',
-          value: 'pai_graph.conf',
-        },
-        {
-          label: 'dot',
-          value: 'pai_graph.dot',
-        },
-        {
-          label: 'init',
-          value: 'init.rc',
-        },
-      ],
-    },
-    {
-      id: '4',
-      dataType: 'sql',
-      name: 'sql_file1',
-      conf: [
-        {
-          label: 'conf',
-          value: 'pai_graph.conf',
-        },
-        {
-          label: 'dot',
-          value: 'pai_graph.dot',
-        },
-        {
-          label: 'init',
-          value: 'init.rc',
-        },
-      ],
-    },
-    {
-      id: '5',
-      dataType: 'sql',
-      name: 'sql_file2',
-      conf: [
-        {
-          label: 'conf',
-          value: 'pai_graph.conf',
-        },
-        {
-          label: 'dot',
-          value: 'pai_graph.dot',
-        },
-        {
-          label: 'init',
-          value: 'init.rc',
-        },
-      ],
-    },
-    {
-      id: '6',
-      dataType: 'feature_etl',
-      name: 'feature_etl_1',
-      conf: [
-        {
-          label: 'conf',
-          value: 'pai_graph.conf',
-        },
-        {
-          label: 'dot',
-          value: 'pai_graph.dot',
-        },
-        {
-          label: 'init',
-          value: 'init.rc',
-        },
-      ],
-    },
-    {
-      id: '7',
-      dataType: 'feature_etl',
-      name: 'feature_etl_1',
-      conf: [
-        {
-          label: 'conf',
-          value: 'pai_graph.conf',
-        },
-        {
-          label: 'dot',
-          value: 'pai_graph.dot',
-        },
-        {
-          label: 'init',
-          value: 'init.rc',
-        },
-      ],
-    },
-    {
-      id: '8',
-      dataType: 'feature_extractor',
-      name: 'feature_extractor',
-      conf: [
-        {
-          label: 'conf',
-          value: 'pai_graph.conf',
-        },
-        {
-          label: 'dot',
-          value: 'pai_graph.dot',
-        },
-        {
-          label: 'init',
-          value: 'init.rc',
-        },
-      ],
-    },
-  ],
-  edges: [
-    {
-      source: '2',
-      target: '4',
-    },
-    {
-      source: '3',
-      target: '4',
-    },
-    {
-      source: '4',
-      target: '5',
-    },
-    {
-      source: '5',
-      target: '6',
-    },
-    {
-      source: '6',
-      target: '7',
-    },
-    {
-      source: '6',
-      target: '8',
-    },
-    {
-      source: '8',
-      target: '5',
-    },
-  ],
-};
+import { transfromData, withoutSelf } from '../data';
 
 @Component({
   templateUrl: './tree-canvas.component.html',
@@ -185,11 +16,15 @@ export class TreeCanvasComponent implements OnInit {
 
   
   ngOnInit(): void {
+    const tempData = transfromData(withoutSelf.data.workflowTemplate)
+    const truncate = (input, count) => input.length > count ? `${input.substring(0, count)}...` : input;
+    debugger
     this.zone.runOutsideAngular(() => {
       G6.registerNode(
         'sql',
         {
           drawShape(cfg, group) {
+            const name = truncate(cfg.metadata.name, 15)
             const rect = group.addShape('rect', {
               attrs: {
                 x: -100,
@@ -203,10 +38,10 @@ export class TreeCanvasComponent implements OnInit {
               },
               name: 'rect-shape',
             });
-            if (cfg.name) {
+            if (cfg.metadata.name) {
               group.addShape('text', {
                 attrs: {
-                  text: cfg.name,
+                  text: name,
                   x: -35,
                   y: -15,
                   fill: '#E3E4FF',
@@ -218,7 +53,7 @@ export class TreeCanvasComponent implements OnInit {
               
               group.addShape('text', {
                 attrs: {
-                  text: cfg.name,
+                  text: name,
                   x: -35,
                   y: 5,
                   fill: '#E3E4FF',
@@ -375,12 +210,14 @@ export class TreeCanvasComponent implements OnInit {
             {
               type: 'tooltip',
               formatText(model) {
+                debugger
                 const cfg = model.conf;
-                const text = [];
-                cfg.forEach((row) => {
-                  text.push(row.label + ':' + row.value + '<br>');
-                });
-                return text.join('\n');
+                return model.id
+                // const text = [];
+                // cfg.forEach((row) => {
+                //   text.push(row.label + ':' + row.value + '<br>');
+                // });
+                // return text.join('\n');
               },
               offset: 30,
             },
@@ -388,7 +225,7 @@ export class TreeCanvasComponent implements OnInit {
         },
         fitView: true,
       });
-      graph.data(data);
+      graph.data(tempData);
       graph.render();
   
       graph.update
@@ -412,7 +249,6 @@ export class TreeCanvasComponent implements OnInit {
           
         // }, 2*1000)
         graph.on('node:mouseenter', (evt) => {
-          debugger
           const { item } = evt;
           graph.setItemState(item, 'hover', true);
         });
