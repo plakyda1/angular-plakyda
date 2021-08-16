@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {EditorComponent} from './editor/editor.component';
+import { TreeCanvasStressComponent } from './tree-canvas copy/tree-canvas-stress.component';
 import { TreeCanvasComponent } from './tree-canvas/tree-canvas.component';
 import { TreeX6Component } from './tree-x6/tree-x6.component';
 import {TreeComponent} from './tree/tree.component';
@@ -17,6 +18,9 @@ const routes: Routes = [{
 },{
   path: 'tree-canvas',
   component: TreeCanvasComponent
+},{
+  path: 'tree-canvas-stress',
+  component: TreeCanvasStressComponent
 }];
 
 @NgModule({
